@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://cu7x7xk1argu5"]
+
+[ext_resource type="Texture2D" uid="uid://bn3n1fwtuw88s" path="res://Assets/Sprites/sun.png" id="1_1e3ep"]
+[ext_resource type="Script" path="res://Code/player.cs" id="1_xy75j"]
+[ext_resource type="Texture2D" uid="uid://df82x2oukibo4" path="res://Assets/Sprites/moon.png" id="2_lhbqr"]
+[ext_resource type="Texture2D" uid="uid://c10xbur6i7ccn" path="res://Assets/Sprites/mid dot.png" id="3_0wj7l"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_doqu3"]
+radius = 4.0
+
+[node name="Player" type="Node2D"]
+script = ExtResource("1_xy75j")
+
+[node name="Shifter" type="Node2D" parent="."]
+
+[node name="Sun" type="Node2D" parent="Shifter"]
+position = Vector2(24, 0)
+
+[node name="Sun Sprite" type="Sprite2D" parent="Shifter/Sun"]
+texture = ExtResource("1_1e3ep")
+
+[node name="Area2D" type="Area2D" parent="Shifter/Sun"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Shifter/Sun/Area2D"]
+shape = SubResource("CircleShape2D_doqu3")
+
+[node name="Moon" type="Node2D" parent="Shifter"]
+position = Vector2(-24, 0)
+
+[node name="Moon Sprite" type="Sprite2D" parent="Shifter/Moon"]
+texture = ExtResource("2_lhbqr")
+
+[node name="Area2D" type="Area2D" parent="Shifter/Moon"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Shifter/Moon/Area2D"]
+shape = SubResource("CircleShape2D_doqu3")
+
+[node name="Mid Point" type="Sprite2D" parent="Shifter"]
+texture = ExtResource("3_0wj7l")
