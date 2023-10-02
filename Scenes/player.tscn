@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://cu7x7xk1argu5"]
+[gd_scene load_steps=7 format=3 uid="uid://cu7x7xk1argu5"]
 
 [ext_resource type="Texture2D" uid="uid://bn3n1fwtuw88s" path="res://Assets/Sprites/sun.png" id="1_1e3ep"]
 [ext_resource type="Script" path="res://Code/player.cs" id="1_xy75j"]
+[ext_resource type="Script" path="res://Code/CounterRotate.cs" id="2_dsus7"]
 [ext_resource type="Texture2D" uid="uid://df82x2oukibo4" path="res://Assets/Sprites/moon.png" id="2_lhbqr"]
 [ext_resource type="Texture2D" uid="uid://c10xbur6i7ccn" path="res://Assets/Sprites/mid dot.png" id="3_0wj7l"]
 
@@ -9,12 +10,18 @@
 radius = 4.0
 
 [node name="Player" type="Node2D"]
+rotation = -2.3
 script = ExtResource("1_xy75j")
+rotation = -2.3
+
+[node name="Camera2D" type="Camera2D" parent="."]
 
 [node name="Shifter" type="Node2D" parent="."]
 
-[node name="Sun" type="Node2D" parent="Shifter"]
+[node name="Sun" type="Node2D" parent="Shifter" node_paths=PackedStringArray("parent")]
 position = Vector2(24, 0)
+script = ExtResource("2_dsus7")
+parent = NodePath("../..")
 
 [node name="Sun Sprite" type="Sprite2D" parent="Shifter/Sun"]
 texture = ExtResource("1_1e3ep")
@@ -24,8 +31,10 @@ texture = ExtResource("1_1e3ep")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Shifter/Sun/Area2D"]
 shape = SubResource("CircleShape2D_doqu3")
 
-[node name="Moon" type="Node2D" parent="Shifter"]
+[node name="Moon" type="Node2D" parent="Shifter" node_paths=PackedStringArray("parent")]
 position = Vector2(-24, 0)
+script = ExtResource("2_dsus7")
+parent = NodePath("../..")
 
 [node name="Moon Sprite" type="Sprite2D" parent="Shifter/Moon"]
 texture = ExtResource("2_lhbqr")
@@ -35,5 +44,7 @@ texture = ExtResource("2_lhbqr")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Shifter/Moon/Area2D"]
 shape = SubResource("CircleShape2D_doqu3")
 
-[node name="Mid Point" type="Sprite2D" parent="Shifter"]
+[node name="Mid Point" type="Sprite2D" parent="Shifter" node_paths=PackedStringArray("parent")]
 texture = ExtResource("3_0wj7l")
+script = ExtResource("2_dsus7")
+parent = NodePath("../..")
