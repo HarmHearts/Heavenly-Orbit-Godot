@@ -4,7 +4,7 @@ using System;
 public partial class player : Node2D
 {
 	[Export]
-	public float rotation = 0;
+	public float rotationSpeed = 0;
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -14,6 +14,6 @@ public partial class player : Node2D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		this.Transform = this.Transform.Rotated(rotation * (float)delta);
+		this.Transform = this.Transform.Rotated(rotationSpeed * (float)delta);
 	}
 }

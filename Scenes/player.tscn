@@ -10,11 +10,8 @@
 radius = 4.0
 
 [node name="Player" type="Node2D"]
-rotation = -2.3
 script = ExtResource("1_xy75j")
-rotation = -2.3
-
-[node name="Camera2D" type="Camera2D" parent="."]
+rotationSpeed = 1.6
 
 [node name="Shifter" type="Node2D" parent="."]
 
