@@ -1,14 +1,14 @@
 [gd_scene load_steps=5 format=3 uid="uid://bjbs78alm5pt6"]
 
 [ext_resource type="Shader" path="res://Shaders/palette.gdshader" id="1_yjnot"]
-[ext_resource type="Texture2D" uid="uid://cf7pcm261sdep" path="res://Assets/Palettes/blk-aqu4-1x.png" id="2_flnhh"]
+[ext_resource type="Texture2D" uid="uid://c04u3ofwc7wty" path="res://Assets/Palettes/nintendo-gameboy-bgb-1x.png" id="2_hkh6l"]
 [ext_resource type="PackedScene" uid="uid://cu7x7xk1argu5" path="res://Scenes/player.tscn" id="3_weuc1"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ok7mo"]
 shader = ExtResource("1_yjnot")
 shader_parameter/palette_size = 4
 shader_parameter/offset = 0.5
-shader_parameter/palette = ExtResource("2_flnhh")
+shader_parameter/palette = ExtResource("2_hkh6l")
 
 [node name="Level Root" type="Node2D"]
 
