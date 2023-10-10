@@ -25,3 +25,4 @@ offset_right = 80.0
 offset_bottom = 72.0
 
 [node name="Player" parent="." instance=ExtResource("3_weuc1")]
+DistancingSpeed = 2.5

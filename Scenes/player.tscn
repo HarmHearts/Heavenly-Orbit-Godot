@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cu7x7xk1argu5"]
+[gd_scene load_steps=8 format=3 uid="uid://cu7x7xk1argu5"]
 
 [ext_resource type="Texture2D" uid="uid://bn3n1fwtuw88s" path="res://Assets/Sprites/sun.png" id="1_1e3ep"]
 [ext_resource type="Script" path="res://Code/player.cs" id="1_xy75j"]
@@ -9,39 +9,47 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_doqu3"]
 radius = 4.0
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sy6iv"]
+
 [node name="Player" type="Node2D"]
 script = ExtResource("1_xy75j")
-rotationSpeed = 1.6
+moonReference = NodePath("Moon")
+sunReference = NodePath("Sun")
 
-[node name="Shifter" type="Node2D" parent="."]
-
-[node name="Sun" type="Node2D" parent="Shifter" node_paths=PackedStringArray("parent")]
-position = Vector2(24, 0)
-script = ExtResource("2_dsus7")
-parent = NodePath("../..")
-
-[node name="Sun Sprite" type="Sprite2D" parent="Shifter/Sun"]
-texture = ExtResource("1_1e3ep")
-
-[node name="Area2D" type="Area2D" parent="Shifter/Sun"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Shifter/Sun/Area2D"]
-shape = SubResource("CircleShape2D_doqu3")
-
-[node name="Moon" type="Node2D" parent="Shifter" node_paths=PackedStringArray("parent")]
+[node name="Moon" type="Node2D" parent="." node_paths=PackedStringArray("parent")]
 position = Vector2(-24, 0)
 script = ExtResource("2_dsus7")
-parent = NodePath("../..")
+parent = NodePath("..")
 
-[node name="Moon Sprite" type="Sprite2D" parent="Shifter/Moon"]
+[node name="Moon Sprite" type="Sprite2D" parent="Moon"]
 texture = ExtResource("2_lhbqr")
 
-[node name="Area2D" type="Area2D" parent="Shifter/Moon"]
+[node name="Area2D" type="Area2D" parent="Moon"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Shifter/Moon/Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Moon/Area2D"]
 shape = SubResource("CircleShape2D_doqu3")
 
-[node name="Mid Point" type="Sprite2D" parent="Shifter" node_paths=PackedStringArray("parent")]
+[node name="MoonMarker" type="Marker2D" parent="Moon"]
+
+[node name="Sun" type="Node2D" parent="." node_paths=PackedStringArray("parent")]
+material = SubResource("ShaderMaterial_sy6iv")
+position = Vector2(24, 0)
+script = ExtResource("2_dsus7")
+parent = NodePath("..")
+
+[node name="Area2D" type="Area2D" parent="Sun"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sun/Area2D"]
+shape = SubResource("CircleShape2D_doqu3")
+
+[node name="Sun Sprite" type="Sprite2D" parent="Sun"]
+texture = ExtResource("1_1e3ep")
+
+[node name="SunMarker" type="Marker2D" parent="Sun"]
+
+[node name="Mid Point" type="Sprite2D" parent="." node_paths=PackedStringArray("parent")]
 texture = ExtResource("3_0wj7l")
 script = ExtResource("2_dsus7")
-parent = NodePath("../..")
+parent = NodePath("..")
+
+[node name="MidMarker" type="Marker2D" parent="Mid Point"]
