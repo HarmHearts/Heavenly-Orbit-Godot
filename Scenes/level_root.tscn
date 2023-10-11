@@ -1,18 +1,34 @@
-[gd_scene load_steps=5 format=3 uid="uid://bjbs78alm5pt6"]
+[gd_scene load_steps=8 format=3 uid="uid://bjbs78alm5pt6"]
 
 [ext_resource type="Shader" path="res://Shaders/palette.gdshader" id="1_yjnot"]
-[ext_resource type="Texture2D" uid="uid://c04u3ofwc7wty" path="res://Assets/Palettes/nintendo-gameboy-bgb-1x.png" id="2_hkh6l"]
+[ext_resource type="Script" path="res://Code/CameraFollow.cs" id="2_njdxo"]
+[ext_resource type="PackedScene" uid="uid://b8j4utj6b8lrb" path="res://Scenes/background.tscn" id="3_51fth"]
 [ext_resource type="PackedScene" uid="uid://cu7x7xk1argu5" path="res://Scenes/player.tscn" id="3_weuc1"]
+[ext_resource type="Texture2D" uid="uid://ie6b4rucipn1" path="res://Assets/Palettes/cool-sweater-1x.png" id="4_pd055"]
+[ext_resource type="PackedScene" uid="uid://0bb7uxesqk6j" path="res://Levels/Level Test 2/test level 2.ldtk" id="6_u843e"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ok7mo"]
 shader = ExtResource("1_yjnot")
 shader_parameter/palette_size = 4
 shader_parameter/offset = 0.5
-shader_parameter/palette = ExtResource("2_hkh6l")
+shader_parameter/palette = ExtResource("4_pd055")
 
 [node name="Level Root" type="Node2D"]
 
-[node name="Main Camera" type="Camera2D" parent="."]
+[node name="test level 2" parent="." instance=ExtResource("6_u843e")]
+z_index = -10
+texture_filter = 2
+texture_repeat = 1
+
+[node name="Main Camera" type="Camera2D" parent="." node_paths=PackedStringArray("target")]
+position = Vector2(160, 160)
+editor_draw_limits = true
+script = ExtResource("2_njdxo")
+target = NodePath("../Player")
+interpolation = 2.0
+baseSpeed = 12.0
+lookAhead = 0.75
+rotationReach = 28.0
 
 [node name="Palette Filter" type="ColorRect" parent="Main Camera"]
 z_index = 100
@@ -24,5 +40,7 @@ offset_top = -72.0
 offset_right = 80.0
 offset_bottom = 72.0
 
+[node name="Background" parent="Main Camera" instance=ExtResource("3_51fth")]
+
 [node name="Player" parent="." instance=ExtResource("3_weuc1")]
-DistancingSpeed = 2.5
+position = Vector2(160, 160)

@@ -1,29 +1,40 @@
 using Godot;
 using System;
 
-public partial class player : Node2D
+public partial class Player : Node2D
 {
-	[Export] public float RotationSpeed = 1;
-	[Export] public float LinearSpeed = 0;
+	[Export]
+	public float rotationSpeed;
+	[Export]
+	public float quantization;
+	[Export]
+	public float distanceSpeed;
+	[Export]
+	public float minDistance;
+	[Export]
+	public float maxDistance;
+	[Export]
+	public Node2D sun;
+	[Export]
+	public Node2D moon;
+	[Export]
+	public Node2D shifter;
 
-	[Export] public float Distance = 1;
-	[Export] public float defaultDistance = 24;
-	[Export] public float DistancingSpeed = 0.75f;
-	[Export] public float MinDistance = 0.5f;
-	[Export] public float MaxDistance = 1.5f;
-	private int distanceInPixels => (int)(Distance * defaultDistance);
+	public float bodyDistance = 24;
 
-    [Export] private NodePath moonReference;
-    [Export] private NodePath sunReference;
+	public bool locked;
+	/// <summary>
+	/// true for sun false for moon
+	/// </summary>
+	public bool lockedBody;
 
-	private Node2D moon;
-	private Node2D sun;
+	public Vector2 moveDirection;
+	public float moveSpeed;
 
-	public bool MoonHeld;
-	public bool SunHeld;
-
-	private Vector2 movementVector;
-
+	//input stuff
+	private bool upHeld;
+	private bool downHeld;
+	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -54,74 +65,122 @@ public partial class player : Node2D
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
 	{
-		Rotation += (RotationSpeed * (float)delta);
-
-        CalculateDistance(delta);
-        SetBodyPositions();
+		//always be rotating
+		this.Rotation += rotationSpeed * (float)delta;
+		//do distancing
+		if(upHeld)
+		{
+			bodyDistance = Mathf.MoveToward(bodyDistance, maxDistance, distanceSpeed * (float)delta);
+		}
+        if (downHeld)
+        {
+            bodyDistance = Mathf.MoveToward(bodyDistance, minDistance, distanceSpeed * (float)delta);
+        }
+		//set distance between bodies
+		sun.Position = new Vector2(bodyDistance, 0);
+        moon.Position = new Vector2(-bodyDistance, 0);
+		//locked behaviors
+		if(locked)
+		{
+            //set shifter position
+            if (lockedBody) shifter.Position = new Vector2(-bodyDistance, 0);
+			else shifter.Position = new Vector2(bodyDistance, 0);
+			//calculate launch direction
+			float launchAngle = Mathf.DegToRad(Mathf.Round(this.RotationDegrees / quantization) * quantization);
+			if(rotationSpeed > 0) moveDirection = Vector2.FromAngle(launchAngle + 1.570796f);
+			else moveDirection = Vector2.FromAngle(launchAngle - 1.570796f);
+			if (lockedBody) moveDirection *= -1;
+			moveSpeed = Mathf.Abs(rotationSpeed * (bodyDistance));
+        }
+		//unlocked behaviors
+		else
+		{
+			this.Position += moveDirection * (moveSpeed * (float)delta);
+		}
     }
 
-	private void CalculateDistance(double delta)
-	{
-        float axis = Input.GetAxis("DPadDown", "DPadUp");
-        Distance = (float)Mathf.Clamp(Distance + ((axis * DistancingSpeed) * delta), MinDistance, MaxDistance);
-    }
-
-	private void SetBodyPositions()
-	{
-        moon.Position = new Vector2(-distanceInPixels, moon.Position.Y);
-        sun.Position = new Vector2(distanceInPixels, sun.Position.Y);
-    }
-
-    public void Lock(Node2D locked, Node2D other)
+    public override void _Input(InputEvent @event)
     {
-		/*
-        if (focus == sun) sunSprite.Lock();
-        if (focus == moon) moonSprite.Lock();
-		*/
-            
-        movementVector = Vector2.Zero;
-
-        Vector2 presentPosition = GlobalPosition;
-        Vector2 lockedOffset = locked.GlobalPosition - presentPosition;
-        Vector2 otherOffset = other.GlobalPosition - presentPosition;
-
-        // AudioManager.Instance.PlaySFX("Lock");
-
-        Position = locked.GlobalPosition;
-        other.GlobalPosition += otherOffset;
-        locked.GlobalPosition -= lockedOffset;
+		//get lock actions
+		if(@event.IsActionPressed("Btn_A"))
+		{
+			if(!locked)
+			{
+				LockSun();
+			}
+			else if(locked && !lockedBody)
+			{
+				UnLock();
+				LockSun();
+			}
+		}
+		if(@event.IsActionReleased("Btn_A"))
+		{
+			if(locked && lockedBody)
+			{
+				UnLock();
+			}
+		}
+        if (@event.IsActionPressed("Btn_B"))
+        {
+            if (!locked)
+            {
+                LockMoon();
+            }
+            else if (locked && lockedBody)
+            {
+                UnLock();
+                LockMoon();
+            }
+        }
+        if (@event.IsActionReleased("Btn_B"))
+        {
+            if (locked && !lockedBody)
+            {
+                UnLock();
+            }
+        }
+        //get distance input state
+        if (@event.IsActionPressed("Dpad_Up"))
+        {
+            upHeld = true;
+			downHeld = false;
+        }
+		else if (@event.IsActionReleased("Dpad_Up"))
+		{
+			upHeld = false;
+		}
+        if (@event.IsActionPressed("Dpad_Down"))
+        {
+            downHeld = true;
+            upHeld = false;
+        }
+        else if (@event.IsActionReleased("Dpad_Down"))
+        {
+            downHeld = false;
+        }
     }
 
-    public void Release(Node2D locked, Node2D other)
+	private void UnLock()
 	{
-        /*
-        if (focus == sun)
-        {
-            if (!SunLocked) return;
-            sunSprite.Unlock();
-            SunLocked = false;
-        }
-        if (focus == moon)
-        {
-            if (!MoonLocked) return;
-            moonSprite.Unlock();
-            MoonLocked = false;
-        }
-        */
+        this.Position = sun.GlobalPosition.Lerp(moon.GlobalPosition, 0.5f);
+        shifter.Position = Vector2.Zero;
+		locked = false;
+	}
 
-        Vector2 offset = (other.GlobalPosition - locked.GlobalPosition) / 2;
+	private void LockSun()
+	{
+		//do lockability check here
+		locked = true;
+		lockedBody = true;
+		this.Position = sun.GlobalPosition;
+	}
 
-        // RecalculateSpeed();
-
-        Vector2 direction = (other.GlobalPosition - locked.GlobalPosition);
-        direction = new Vector2(direction.Y, -direction.X);
-
-        // AudioManager.Instance.PlaySFX("Release");
-
-        // MovementVector = (Quantize(direction, 16) * -spin);
-
-        GlobalPosition += offset;
-        other.GlobalPosition -= offset;
-        locked.GlobalPosition -= offset;
+    private void LockMoon()
+    {
+        //do lockability check here
+        locked = true;
+        lockedBody = false;
+        this.Position = moon.GlobalPosition;
     }
 }
