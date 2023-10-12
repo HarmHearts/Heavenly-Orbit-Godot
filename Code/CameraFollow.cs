@@ -30,7 +30,7 @@ public partial class CameraFollow : Node2D
 		//lookahead
 		if(!playerScript.locked)
 		{
-			targetPoint += playerScript.moveDirection * (playerScript.moveSpeed * lookAhead);
+            targetPoint += playerScript.moveDirection * (playerScript.moveSpeed * lookAhead);
 		}
 		else
 		{

@@ -34,33 +34,18 @@ public partial class Player : Node2D
 	//input stuff
 	private bool upHeld;
 	private bool downHeld;
+
+	[Signal]
+	public delegate void SunLockedEventHandler();
+	[Signal]
+	public delegate void MoonLockedEventHandler();
+	[Signal]
+	public delegate void UnlockEventHandler();
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		moon = (Node2D)GetNode(moonReference);
-		sun = (Node2D)GetNode(sunReference);
 	}
-
-    public override void _Input(InputEvent @event)
-    {
-		if (@event.IsAction("A"))
-		{
-			if (@event.IsPressed() && !MoonHeld) 
-			{
-				MoonHeld = true;
-				Lock(moon, sun);
-			} else if (@event.IsReleased() && MoonHeld)
-			{
-				MoonHeld = false;
-                Release(moon, sun);
-            }
-		} 
-		else if (@event.IsAction("B"))
-		{
-
-		}
-    }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
@@ -166,6 +151,7 @@ public partial class Player : Node2D
         this.Position = sun.GlobalPosition.Lerp(moon.GlobalPosition, 0.5f);
         shifter.Position = Vector2.Zero;
 		locked = false;
+		EmitSignal(SignalName.Unlock);
 	}
 
 	private void LockSun()
@@ -174,6 +160,7 @@ public partial class Player : Node2D
 		locked = true;
 		lockedBody = true;
 		this.Position = sun.GlobalPosition;
+		EmitSignal(SignalName.SunLocked);
 	}
 
     private void LockMoon()
@@ -182,5 +169,6 @@ public partial class Player : Node2D
         locked = true;
         lockedBody = false;
         this.Position = moon.GlobalPosition;
+        EmitSignal(SignalName.MoonLocked);
     }
 }
