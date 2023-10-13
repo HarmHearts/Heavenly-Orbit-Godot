@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cu7x7xk1argu5"]
+[gd_scene load_steps=15 format=3 uid="uid://cu7x7xk1argu5"]
 
 [ext_resource type="Texture2D" uid="uid://bn3n1fwtuw88s" path="res://Assets/Sprites/sun.png" id="1_1e3ep"]
 [ext_resource type="Script" path="res://Code/Player.cs" id="1_n51g8"]
@@ -10,11 +10,18 @@
 [ext_resource type="Texture2D" uid="uid://ckaf710l3p524" path="res://Assets/Sprites/mid arrow.png" id="6_pdekc"]
 [ext_resource type="Texture2D" uid="uid://bsm877hjkh6be" path="res://Assets/Sprites/moon locked.png" id="7_r8o2w"]
 [ext_resource type="Script" path="res://Code/GuideDot.cs" id="7_x21q5"]
+[ext_resource type="Script" path="res://Scenes/PlayerCollide.cs" id="8_fipn0"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_doqu3"]
 radius = 4.0
 
-[node name="Player" type="Node2D" node_paths=PackedStringArray("sun", "moon", "shifter")]
+[sub_resource type="CircleShape2D" id="CircleShape2D_nha4a"]
+radius = 4.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6jv4h"]
+radius = 4.0
+
+[node name="Player" type="Node2D" node_paths=PackedStringArray("sun", "sunCast", "moon", "moonCast", "shifter")]
 script = ExtResource("1_n51g8")
 rotationSpeed = 1.8
 quantization = 22.5
@@ -22,7 +29,9 @@ distanceSpeed = 32.0
 minDistance = 8.0
 maxDistance = 38.0
 sun = NodePath("Shifter/Sun")
+sunCast = NodePath("Shifter/Sun/FloorChecker")
 moon = NodePath("Shifter/Moon")
+moonCast = NodePath("Shifter/Moon/FloorChecker")
 shifter = NodePath("Shifter")
 
 [node name="Shifter" type="Node2D" parent="."]
@@ -38,12 +47,19 @@ planetToggle = true
 texture = ExtResource("1_1e3ep")
 script = ExtResource("4_haeyg")
 
-[node name="Area2D" type="Area2D" parent="Shifter/Sun"]
-collision_mask = 14
-input_pickable = false
+[node name="WallCollide" type="AnimatableBody2D" parent="Shifter/Sun"]
+collision_mask = 28
+sync_to_physics = false
+script = ExtResource("8_fipn0")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Shifter/Sun/Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Shifter/Sun/WallCollide"]
 shape = SubResource("CircleShape2D_doqu3")
+
+[node name="FloorChecker" type="ShapeCast2D" parent="Shifter/Sun"]
+shape = SubResource("CircleShape2D_nha4a")
+target_position = Vector2(0, 0)
+collision_mask = 2
+collide_with_areas = true
 
 [node name="Moon" type="Node2D" parent="Shifter"]
 position = Vector2(-24, 0)
@@ -55,12 +71,21 @@ lockedPlanet = ExtResource("7_r8o2w")
 texture = ExtResource("2_lhbqr")
 script = ExtResource("4_haeyg")
 
-[node name="Area2D" type="Area2D" parent="Shifter/Moon"]
-collision_mask = 14
-input_pickable = false
+[node name="WallCollide" type="AnimatableBody2D" parent="Shifter/Moon"]
+collision_mask = 28
+sync_to_physics = false
+script = ExtResource("8_fipn0")
+moon = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Shifter/Moon/Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Shifter/Moon/WallCollide"]
 shape = SubResource("CircleShape2D_doqu3")
+
+[node name="FloorChecker" type="ShapeCast2D" parent="Shifter/Moon"]
+shape = SubResource("CircleShape2D_6jv4h")
+exclude_parent = false
+target_position = Vector2(0, 0)
+collision_mask = 2
+collide_with_areas = true
 
 [node name="Mid Point" type="Sprite2D" parent="Shifter" node_paths=PackedStringArray("player")]
 z_index = -1
@@ -74,3 +99,7 @@ player = NodePath("../..")
 [connection signal="SunLocked" from="." to="Shifter/Sun" method="LockSprite"]
 [connection signal="Unlock" from="." to="Shifter/Sun" method="UnlockSprite"]
 [connection signal="Unlock" from="." to="Shifter/Moon" method="UnlockSprite"]
+[connection signal="WallCollision" from="Shifter/Sun" to="." method="Die" binds= [false]]
+[connection signal="OnCollide" from="Shifter/Sun/WallCollide" to="." method="Die"]
+[connection signal="WallCollision" from="Shifter/Moon" to="." method="Die" binds= [true]]
+[connection signal="OnCollide" from="Shifter/Moon/WallCollide" to="." method="Die"]

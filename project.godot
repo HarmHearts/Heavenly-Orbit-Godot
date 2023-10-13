@@ -60,6 +60,7 @@ Btn_B={
 2d_physics/layer_2="Floor "
 2d_physics/layer_3="Wall"
 2d_physics/layer_4="Entity"
+2d_physics/layer_5="Bouncy"
 
 [rendering]
 

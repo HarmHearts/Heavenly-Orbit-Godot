@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Reflection.Metadata.Ecma335;
 
 public partial class Player : Node2D
 {
@@ -15,9 +16,13 @@ public partial class Player : Node2D
 	public float maxDistance;
 	[Export]
 	public Node2D sun;
+	[Export] 
+	public ShapeCast2D sunCast;
 	[Export]
 	public Node2D moon;
-	[Export]
+    [Export]
+    public ShapeCast2D moonCast;
+    [Export]
 	public Node2D shifter;
 
 	public float bodyDistance = 24;
@@ -95,7 +100,7 @@ public partial class Player : Node2D
 			}
 			else if(locked && !lockedBody)
 			{
-				UnLock();
+				UnlockBody();
 				LockSun();
 			}
 		}
@@ -103,7 +108,7 @@ public partial class Player : Node2D
 		{
 			if(locked && lockedBody)
 			{
-				UnLock();
+				UnlockBody();
 			}
 		}
         if (@event.IsActionPressed("Btn_B"))
@@ -114,7 +119,7 @@ public partial class Player : Node2D
             }
             else if (locked && lockedBody)
             {
-                UnLock();
+                UnlockBody();
                 LockMoon();
             }
         }
@@ -122,7 +127,7 @@ public partial class Player : Node2D
         {
             if (locked && !lockedBody)
             {
-                UnLock();
+                UnlockBody();
             }
         }
         //get distance input state
@@ -146,7 +151,7 @@ public partial class Player : Node2D
         }
     }
 
-	private void UnLock()
+	private void UnlockBody()
 	{
         this.Position = sun.GlobalPosition.Lerp(moon.GlobalPosition, 0.5f);
         shifter.Position = Vector2.Zero;
@@ -157,6 +162,9 @@ public partial class Player : Node2D
 	private void LockSun()
 	{
 		//do lockability check here
+		Node2D floor = CheckFloor(false);
+		if (floor == null) return;
+
 		locked = true;
 		lockedBody = true;
 		this.Position = sun.GlobalPosition;
@@ -166,9 +174,51 @@ public partial class Player : Node2D
     private void LockMoon()
     {
         //do lockability check here
+        Node2D floor = CheckFloor(true);
+        if (floor == null) return;
+
         locked = true;
         lockedBody = false;
         this.Position = moon.GlobalPosition;
         EmitSignal(SignalName.MoonLocked);
     }
+
+	public void Die(KinematicCollision2D coll, bool moon)
+	{
+		GD.Print("Oopsy daisy");
+	}
+
+	private Node2D CheckFloor(bool moon)
+	{
+        ShapeCast2D shape = moon ? moonCast : sunCast;
+		Node2D res = null;
+
+		shape.ForceShapecastUpdate();
+		int ct = shape.GetCollisionCount();
+
+		for (int i = 0; i < ct; i++)
+		{
+            Node2D body = shape.GetCollider(i) as Node2D;
+            if (body != null)
+			{
+				if (body.IsInGroup("Floor"))
+				{
+					return body;
+                } else if (body.IsInGroup("SunFloor"))
+				{
+
+				}
+                else if (body.IsInGroup("MoonFloor"))
+                {
+
+                }
+                else if (body.IsInGroup("Ice"))
+                {
+
+                }
+            }
+        }
+
+		return null;
+	}
 }

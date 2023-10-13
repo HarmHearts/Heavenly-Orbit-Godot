@@ -13,6 +13,13 @@ public partial class PlayerPlanet : Node2D
 	private Sprite2D planetSprite;
 	private Player player;
 
+	[Signal]
+	public delegate void WallCollisionEventHandler();
+	[Signal]
+	public delegate void BounceCollisionEventHandler(Vector2 normal);
+	[Signal]
+	public delegate void UnlockEventHandler();
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -26,7 +33,7 @@ public partial class PlayerPlanet : Node2D
 		//fix rotation
 		this.GlobalRotation = 0;
 		//flip sprite
-		if(this.GlobalPosition.X < this.GetParent<Node2D>().GlobalPosition.X)
+		if (this.GlobalPosition.X < this.GetParent<Node2D>().GlobalPosition.X)
 		{
 			planetSprite.FlipH = true;
 		}
@@ -43,6 +50,6 @@ public partial class PlayerPlanet : Node2D
 
 	public void UnlockSprite()
 	{
-        planetSprite.Texture = normalPlanet;
-    }
+		planetSprite.Texture = normalPlanet;
+	}
 }
