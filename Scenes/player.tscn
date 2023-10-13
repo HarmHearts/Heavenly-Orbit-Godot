@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cu7x7xk1argu5"]
+[gd_scene load_steps=16 format=3 uid="uid://cu7x7xk1argu5"]
 
 [ext_resource type="Texture2D" uid="uid://bn3n1fwtuw88s" path="res://Assets/Sprites/sun.png" id="1_1e3ep"]
 [ext_resource type="Script" path="res://Code/Player.cs" id="1_n51g8"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://ckaf710l3p524" path="res://Assets/Sprites/mid arrow.png" id="6_pdekc"]
 [ext_resource type="Texture2D" uid="uid://bsm877hjkh6be" path="res://Assets/Sprites/moon locked.png" id="7_r8o2w"]
 [ext_resource type="Script" path="res://Code/GuideDot.cs" id="7_x21q5"]
+[ext_resource type="Texture2D" uid="uid://dnahds7fassb4" path="res://Assets/Sprites/shadow.png" id="8_3r75p"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_doqu3"]
 radius = 4.0
@@ -61,6 +62,12 @@ process_material = ExtResource("6_7ttlt")
 texture = ExtResource("6_3uxkg")
 lifetime = 0.8
 
+[node name="Shadow" type="Sprite2D" parent="Shifter/Sun"]
+visible = false
+modulate = Color(1, 1, 1, 0.576471)
+z_index = -2
+texture = ExtResource("8_3r75p")
+
 [node name="Moon" type="Node2D" parent="Shifter"]
 position = Vector2(-24, 0)
 script = ExtResource("2_1wwcp")
@@ -85,6 +92,12 @@ amount = 12
 process_material = ExtResource("6_7ttlt")
 texture = ExtResource("6_3uxkg")
 lifetime = 0.8
+
+[node name="Shadow" type="Sprite2D" parent="Shifter/Moon"]
+visible = false
+modulate = Color(1, 1, 1, 0.576471)
+z_index = -2
+texture = ExtResource("8_3r75p")
 
 [node name="Mid Point" type="Sprite2D" parent="Shifter" node_paths=PackedStringArray("player")]
 z_index = -1
