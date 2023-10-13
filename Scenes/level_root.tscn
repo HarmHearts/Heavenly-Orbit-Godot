@@ -3,7 +3,7 @@
 [ext_resource type="Shader" path="res://Shaders/palette.gdshader" id="1_yjnot"]
 [ext_resource type="Script" path="res://Code/CameraFollow.cs" id="2_njdxo"]
 [ext_resource type="PackedScene" uid="uid://cu7x7xk1argu5" path="res://Scenes/player.tscn" id="3_weuc1"]
-[ext_resource type="Texture2D" uid="uid://c855nfyuhlwrs" path="res://Assets/Palettes/mist-gb-1x.png" id="4_ompp2"]
+[ext_resource type="Texture2D" uid="uid://diw630bvujx7h" path="res://Assets/Palettes/warmlight-1x.png" id="4_on4w2"]
 [ext_resource type="PackedScene" uid="uid://dtxckn4yqoad6" path="res://Scenes/Backgrounds/grid background.tscn" id="5_e7du3"]
 [ext_resource type="PackedScene" uid="uid://0bb7uxesqk6j" path="res://Levels/Level Test 2/test level 2.ldtk" id="6_u843e"]
 
@@ -11,7 +11,7 @@
 shader = ExtResource("1_yjnot")
 shader_parameter/palette_size = 4
 shader_parameter/offset = 0.5
-shader_parameter/palette = ExtResource("4_ompp2")
+shader_parameter/palette = ExtResource("4_on4w2")
 
 [node name="Level Root" type="Node2D"]
 
@@ -45,3 +45,4 @@ offset_bottom = 72.0
 
 [node name="Player" parent="." instance=ExtResource("3_weuc1")]
 position = Vector2(160, 160)
+rotationSpeed = 1.9
